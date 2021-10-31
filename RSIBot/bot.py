@@ -1,11 +1,10 @@
 import websocket, json, pprint
 
-crypto = "ethusdt"
+crypto = "btcaud"
 interval = "1m"
-SOCKET = "wss://stream.binance.com:9443/ws/btcaud@kline_1m"
+SOCKET = f"wss://stream.binance.com:9443/ws/{crypto}@kline_{interval}"
 
 closes = []
-
 
 # Trading Strategy Parameters
 aroon_time_period = 14
@@ -20,9 +19,7 @@ money_end = amount
 portfolio = 0
 investment, closes, highs, lows = [], [], [], []
 
-
-# Paper trading simulation functions 
-
+# Paper trading simulation functions
 def buy(allocated_money, price):
     global money_end, portfolio, investment
 
@@ -60,7 +57,7 @@ def on_message(ws, message):
     close = candle['c']
     high = candle['h']
     low = candle['l']
-
+    print(close)
     if is_candle_closed:
         print("candle closed at {}".format(close))
         closes.append(float(close))
@@ -69,7 +66,6 @@ def on_message(ws, message):
         last_price = closes[-1]
         print(f'closes: {closes}')
         print(investment)
-        print()
         if core_to_trade:
             buy(core_trade_amount, price = closes[-1])
             core_quantity += core_trade_amount / closes[-1]
